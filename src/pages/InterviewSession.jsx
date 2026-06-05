@@ -17,7 +17,7 @@ export default function InterviewSession() {
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
 
   const chatEndRef = useRef(null);

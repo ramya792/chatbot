@@ -84,9 +84,15 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+  .navbar {
+    position: relative; /* Not sticky on mobile to save screen space and avoid overlap */
+    padding: 12px 0;
+    background: #0a0e17; /* Solid background for mobile to prevent text bleed */
+  }
+
   .navbar-container {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
   
   .brand-text {
@@ -96,15 +102,23 @@
   .navbar-links {
     width: 100%;
     justify-content: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
+    font-size: 0.9rem;
   }
   
   .user-menu {
-    padding-left: 16px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 8px;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
   }
   
   .btn.btn-primary {
-    padding: 8px 16px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
 }
