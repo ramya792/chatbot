@@ -144,13 +144,42 @@
   .hero {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 32px;
   }
   
   .hero-actions {
     justify-content: center;
+    flex-wrap: wrap;
   }
   
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-visual {
+    padding: 16px;
+  }
+  
+  .chat-bubble {
+    max-width: 95%;
+    font-size: 0.9rem;
+  }
+  
+  .features {
+    padding: 40px 0;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 32px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
   }
 }
+

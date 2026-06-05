@@ -204,3 +204,39 @@
   70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
+
+@media (max-width: 768px) {
+  .session-container {
+    height: calc(100dvh - 80px);
+    padding: 10px;
+  }
+  
+  .session-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .session-header .btn {
+    width: 100%;
+  }
+  
+  .chat-area {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .message {
+    max-width: 95%;
+  }
+  
+  .input-area {
+    padding: 12px;
+    flex-direction: column;
+  }
+  
+  .input-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}

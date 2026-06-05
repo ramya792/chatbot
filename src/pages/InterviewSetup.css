@@ -84,3 +84,28 @@
   padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+@media (max-width: 768px) {
+  .setup-container {
+    padding: 24px 16px;
+  }
+  
+  .setup-header h1 {
+    font-size: 2rem;
+  }
+  
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .setup-actions {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  
+  .setup-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

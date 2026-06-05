@@ -81,3 +81,30 @@
 .btn-logout:hover {
   color: var(--danger);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .brand-text {
+    font-size: 1.25rem;
+  }
+  
+  .navbar-links {
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .user-menu {
+    padding-left: 16px;
+  }
+  
+  .btn.btn-primary {
+    padding: 8px 16px;
+  }
+}
