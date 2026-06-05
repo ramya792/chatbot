@@ -228,36 +228,72 @@
 
 @media (max-width: 768px) {
   .session-container {
-    height: calc(100dvh - 80px);
-    padding: 10px;
+    height: calc(100dvh - 60px);
+    padding: 8px;
   }
-
+  
   .session-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row; /* Keep elements inline to save vertical space */
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  
+  .session-meta h2 {
+    font-size: 1rem;
+    margin-bottom: 0;
   }
 
-  .session-header .btn {
-    width: 100%;
+  .session-meta p {
+    font-size: 0.8rem;
+    margin: 0;
   }
 
+  .session-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .session-controls .btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
   .chat-area {
-    padding: 16px;
-    gap: 16px;
+    padding: 12px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
-
+  
   .message {
     max-width: 95%;
   }
 
+  .message-content {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+  
   .input-area {
-    padding: 12px;
-    flex-direction: column;
+    padding: 8px;
+    flex-direction: row; /* Textarea and buttons side-by-side */
+    align-items: flex-end;
+    gap: 8px;
   }
 
+  .chat-input {
+    padding: 10px;
+    height: 50px; /* Force it to be smaller than rows=3 */
+    font-size: 0.95rem;
+  }
+  
   .input-actions {
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-direction: row; /* Mic and Send side-by-side */
+    gap: 6px;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
   }
 }
