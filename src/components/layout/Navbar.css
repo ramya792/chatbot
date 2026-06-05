@@ -86,39 +86,45 @@
 @media (max-width: 768px) {
   .navbar {
     position: relative; /* Not sticky on mobile to save screen space and avoid overlap */
-    padding: 12px 0;
+    padding: 8px 0;
     background: #0a0e17; /* Solid background for mobile to prevent text bleed */
   }
 
   .navbar-container {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
   }
   
   .brand-text {
-    font-size: 1.25rem;
+    display: none; /* Hide brand text on mobile to save space */
+  }
+
+  .brand-icon {
+    width: 24px;
+    height: 24px;
   }
   
   .navbar-links {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
     gap: 12px;
-    flex-wrap: wrap;
-    font-size: 0.9rem;
+    flex-wrap: nowrap;
+    font-size: 0.85rem;
   }
   
   .user-menu {
-    padding-left: 12px;
+    padding-left: 8px;
     border-left: 1px solid rgba(255, 255, 255, 0.2);
-    gap: 8px;
+    gap: 6px;
   }
 
   .user-name {
-    font-size: 0.9rem;
+    display: none; /* Hide name to save space, rely on User icon */
   }
   
   .btn.btn-primary {
-    padding: 6px 12px;
-    font-size: 0.9rem;
+    padding: 4px 10px;
+    font-size: 0.85rem;
   }
 }
