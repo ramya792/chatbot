@@ -228,15 +228,22 @@
 
 @media (max-width: 768px) {
   .session-container {
-    height: calc(100dvh - 60px);
-    padding: 8px;
+    height: calc(100dvh - 60px); /* 60px for navbar */
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
   }
   
   .session-header {
-    flex-direction: row; /* Keep elements inline to save vertical space */
+    flex-direction: row;
     align-items: center;
-    padding: 8px 12px;
-    margin-bottom: 12px;
+    padding: 10px 16px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background: rgba(10, 14, 23, 0.95);
   }
   
   .session-meta h2 {
@@ -255,45 +262,56 @@
   }
 
   .session-controls .btn {
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 0.85rem;
   }
   
   .chat-area {
-    padding: 12px;
-    gap: 12px;
-    margin-bottom: 12px;
+    padding: 16px;
+    gap: 16px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border: none;
+    background: transparent; /* Seamless background */
   }
   
   .message {
-    max-width: 95%;
+    max-width: 85%;
+    width: fit-content; /* Makes bubbles wrap tightly like WhatsApp */
   }
 
   .message-content {
-    padding: 10px;
+    padding: 12px 16px;
     font-size: 0.95rem;
   }
   
   .input-area {
-    padding: 8px;
-    flex-direction: row; /* Textarea and buttons side-by-side */
+    padding: 10px 12px;
+    flex-direction: row;
     align-items: flex-end;
     gap: 8px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 14, 23, 0.98);
   }
 
   .chat-input {
-    padding: 10px;
-    height: 50px; /* Force it to be smaller than rows=3 */
+    padding: 12px 16px;
+    height: 48px;
     font-size: 0.95rem;
+    border-radius: 24px; /* Pill shaped like WhatsApp */
+    background: rgba(255, 255, 255, 0.08);
   }
   
   .input-actions {
-    flex-direction: row; /* Mic and Send side-by-side */
+    flex-direction: row;
     gap: 6px;
+    padding-bottom: 2px;
   }
 
   .btn-icon {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
   }
 }
