@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -13,7 +13,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password);
+      await login(username, password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -27,37 +27,37 @@ export default function Login() {
           <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">Login to continue your interview practice</p>
         </div>
-        
+
         {error && <div className="auth-error">{error}</div>}
-        
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email Address</label>
-            <input 
-              type="email" 
-              className="input-field" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
+            <label>Username</label>
+            <input
+              type="text"
+              className="input-field"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input 
-              type="password" 
-              className="input-field" 
+            <input
+              type="password"
+              className="input-field"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full">
             Login
           </button>
         </form>
-        
+
         <div className="auth-footer">
-          Don't have an account? 
+          Don't have an account?
           <Link to="/register" className="auth-link">Sign up</Link>
         </div>
       </div>

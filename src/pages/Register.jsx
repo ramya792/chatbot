@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 export default function Register() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { register } = useAuth();
@@ -14,7 +13,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(name, email, password);
+      await register(username, password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -28,38 +27,28 @@ export default function Register() {
           <h1 className="auth-title">Create Account</h1>
           <p className="auth-subtitle">Start your interview preparation journey</p>
         </div>
-        
+
         {error && <div className="auth-error">{error}</div>}
-        
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              className="input-field" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required 
-            />
-          </div>
-          <div className="form-group">
-            <label>Email Address</label>
-            <input 
-              type="email" 
-              className="input-field" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
+            <label>Username</label>
+            <input
+              type="text"
+              className="input-field"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input 
-              type="password" 
-              className="input-field" 
+            <input
+              type="password"
+              className="input-field"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
               minLength={6}
             />
           </div>
@@ -67,9 +56,9 @@ export default function Register() {
             Sign Up
           </button>
         </form>
-        
+
         <div className="auth-footer">
-          Already have an account? 
+          Already have an account?
           <Link to="/login" className="auth-link">Login</Link>
         </div>
       </div>

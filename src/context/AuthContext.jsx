@@ -17,16 +17,19 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (email, password) => {
+  const login = (username, password) => {
     return new Promise((resolve, reject) => {
       // Mock logic: check if user exists in local storage list
       const usersStr = localStorage.getItem('interviewVerse_users') || '[]';
       const users = JSON.parse(usersStr);
-      const user = users.find(u => u.email === email && u.password === password);
-      
+      const user = users.find(u => 
+        u.name.toLowerCase().trim() === username.toLowerCase().trim() && 
+        u.password === password
+      );
+
       if (user) {
         // Create session
-        const sessionUser = { id: user.id, name: user.name, email: user.email };
+        const sessionUser = { id: user.id, name: user.name };
         localStorage.setItem('interviewVerse_user', JSON.stringify(sessionUser));
         setCurrentUser(sessionUser);
         resolve(sessionUser);
@@ -36,22 +39,22 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const register = (name, email, password) => {
+  const register = (username, password) => {
     return new Promise((resolve, reject) => {
       const usersStr = localStorage.getItem('interviewVerse_users') || '[]';
       const users = JSON.parse(usersStr);
-      
-      if (users.find(u => u.email === email)) {
-        reject(new Error('Email already exists'));
+
+      if (users.find(u => u.name.toLowerCase().trim() === username.toLowerCase().trim())) {
+        reject(new Error('Username already exists'));
         return;
       }
 
-      const newUser = { id: Date.now().toString(), name, email, password };
+      const newUser = { id: Date.now().toString(), name: username.trim(), password };
       users.push(newUser);
       localStorage.setItem('interviewVerse_users', JSON.stringify(users));
-      
+
       // Auto login after register
-      const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email };
+      const sessionUser = { id: newUser.id, name: newUser.name };
       localStorage.setItem('interviewVerse_user', JSON.stringify(sessionUser));
       setCurrentUser(sessionUser);
       resolve(sessionUser);
