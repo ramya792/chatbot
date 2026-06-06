@@ -60,52 +60,6 @@ export default function InterviewSession() {
     });
   };
 
-  // Handle Visual Viewport for mobile keyboards
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.visualViewport && containerRef.current) {
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) {
-          const vv = window.visualViewport;
-          const navbarHeight = 60;
-          
-          // Lock container to the exact visual viewport bounds
-          containerRef.current.style.position = 'fixed';
-          
-          // Handle Safari scroll offset to prevent empty gaps
-          const offsetTop = vv.offsetTop;
-          
-          containerRef.current.style.top = `${Math.max(navbarHeight, offsetTop + navbarHeight)}px`;
-          containerRef.current.style.height = `${vv.height - navbarHeight}px`;
-          containerRef.current.style.left = `${vv.offsetLeft}px`;
-          containerRef.current.style.width = `${vv.width}px`;
-          containerRef.current.style.bottom = 'auto';
-          
-          handleScroll();
-        } else {
-          containerRef.current.style.position = 'relative';
-          containerRef.current.style.height = `calc(100vh - 120px)`;
-          containerRef.current.style.top = '0';
-          containerRef.current.style.left = '0';
-          containerRef.current.style.width = '100%';
-        }
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-      handleResize(); // Initial call
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
-      }
-    };
-  }, []);
-
   // Initialize
   useEffect(() => {
     if (!setupData) {
