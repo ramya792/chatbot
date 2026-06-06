@@ -5,6 +5,8 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .session-header {
@@ -155,6 +157,8 @@
   font-family: inherit;
   font-size: 1rem;
   transition: var(--transition);
+  max-height: 120px;
+  overflow-y: auto;
 }
 
 .chat-input:focus {
@@ -232,6 +236,7 @@
     padding: 0;
     margin: 0;
     max-width: 100%;
+    overflow-x: hidden;
   }
   
   .session-header {
@@ -294,6 +299,9 @@
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(10, 14, 23, 0.98);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
   }
 
   .chat-input {
@@ -302,6 +310,10 @@
     font-size: 0.95rem;
     border-radius: 24px; /* Pill shaped like WhatsApp */
     background: rgba(255, 255, 255, 0.08);
+    scrollbar-width: none; /* Hide scrollbar for clean look */
+  }
+  .chat-input::-webkit-scrollbar {
+    display: none;
   }
   
   .input-actions {

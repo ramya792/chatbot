@@ -22,6 +22,16 @@ export default function InterviewSession() {
 
   const chatEndRef = useRef(null);
   const recognitionRef = useRef(null);
+  const textareaRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const adjustTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const getVoices = () => {
     return new Promise((resolve) => {
@@ -37,6 +47,29 @@ export default function InterviewSession() {
     });
   };
 
+  // Handle Visual Viewport for mobile keyboards
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.visualViewport && containerRef.current) {
+        // Adjust container height to visual viewport height to avoid keyboard overlap
+        containerRef.current.style.height = `${window.visualViewport.height}px`;
+        // Scroll to bottom when keyboard opens
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      handleResize(); // Initial call
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+      }
+    };
+  }, []);
+
   // Initialize
   useEffect(() => {
     if (!setupData) {
@@ -47,8 +80,8 @@ export default function InterviewSession() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = 'en-US';
 
       recognition.onstart = () => {
@@ -56,45 +89,38 @@ export default function InterviewSession() {
       };
 
       recognition.onsoundend = () => {
-        setStatusMessage('Processing speech...');
+        setStatusMessage('Processing...');
       };
 
       recognition.onresult = (event) => {
-        let currentInterim = '';
-        let currentFinal = '';
+        let finalTranscript = '';
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
+        for (let i = 0; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
-            currentFinal += event.results[i][0].transcript;
-          } else {
-            currentInterim += event.results[i][0].transcript;
+            finalTranscript += event.results[i][0].transcript;
           }
         }
 
-        if (currentFinal) {
-          setInputValue(prev => prev + (prev.trim() ? ' ' : '') + currentFinal.trim());
-        }
-
-        // Update DOM directly to prevent React from re-rendering 50 times a second and freezing the mic
-        const interimElement = document.getElementById('interim-text-display');
-        if (interimElement) {
-          interimElement.innerText = currentInterim;
+        if (finalTranscript.trim()) {
+          setInputValue(prev => {
+            const newValue = prev + (prev.trim() ? ' ' : '') + finalTranscript.trim();
+            setTimeout(adjustTextareaHeight, 0); 
+            return newValue;
+          });
         }
       };
 
       recognition.onerror = (event) => {
         console.error('Speech recognition error', event.error);
         setIsRecording(false);
-        setStatusMessage('');
-        const interimElement = document.getElementById('interim-text-display');
-        if (interimElement) interimElement.innerText = '';
+        if (event.error !== 'no-speech') {
+           setStatusMessage('');
+        }
       };
 
       recognition.onend = () => {
         setIsRecording(false);
         setStatusMessage('');
-        const interimElement = document.getElementById('interim-text-display');
-        if (interimElement) interimElement.innerText = '';
       };
 
       recognitionRef.current = recognition;
@@ -198,6 +224,9 @@ export default function InterviewSession() {
 
     setMessages(updatedMessages);
     setInputValue('');
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'; // Reset height
+    }
     setIsTyping(true);
     setStatusMessage('Generating response...');
 
@@ -233,8 +262,6 @@ export default function InterviewSession() {
       recognitionRef.current.stop();
       setIsRecording(false);
       setStatusMessage('');
-      const interimElement = document.getElementById('interim-text-display');
-      if (interimElement) interimElement.innerText = '';
     } else {
       try {
         recognitionRef.current.start();
@@ -278,7 +305,7 @@ export default function InterviewSession() {
   if (!setupData) return null;
 
   return (
-    <div className="session-container animate-fade-in">
+    <div className="session-container animate-fade-in" ref={containerRef}>
       <div className="session-header">
         <div className="session-meta">
           <h2><Bot size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '8px' }} />
@@ -335,23 +362,31 @@ export default function InterviewSession() {
 
       <div className="input-area">
         <textarea
+          ref={textareaRef}
           className="chat-input"
           placeholder="Type your answer here or use the microphone..."
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            adjustTextareaHeight();
+          }}
+          onFocus={() => {
+            setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 300);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               handleSend();
             }
           }}
-          rows={3}
+          rows={1}
+          style={{ minHeight: '48px' }}
         />
-        <div id="interim-text-display" style={{ color: '#888', fontSize: '0.9rem', padding: '8px', fontStyle: 'italic', minHeight: '10px' }}></div>
         <div className="input-actions">
           <button
             className={`btn-icon btn-voice ${isRecording ? 'recording' : ''}`}
             onClick={toggleRecording}
+            disabled={statusMessage === 'Processing...'}
             title={isRecording ? "Stop recording" : "Start recording"}
           >
             {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
