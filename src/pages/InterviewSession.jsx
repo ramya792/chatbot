@@ -66,19 +66,28 @@ export default function InterviewSession() {
       if (window.visualViewport && containerRef.current) {
         const isMobile = window.innerWidth <= 768;
         if (isMobile) {
-          // Adjust container height to exactly match the visual viewport minus the 60px navbar
-          // This perfectly solves iOS Safari and Android Chrome keyboard overlap
-          containerRef.current.style.height = `${window.visualViewport.height - 60}px`;
+          const vv = window.visualViewport;
+          const navbarHeight = 60;
+          
+          // Lock container to the exact visual viewport bounds
           containerRef.current.style.position = 'fixed';
-          containerRef.current.style.top = '60px';
-          containerRef.current.style.left = '0';
-          containerRef.current.style.right = '0';
+          
+          // Handle Safari scroll offset to prevent empty gaps
+          const offsetTop = vv.offsetTop;
+          
+          containerRef.current.style.top = `${Math.max(navbarHeight, offsetTop + navbarHeight)}px`;
+          containerRef.current.style.height = `${vv.height - navbarHeight}px`;
+          containerRef.current.style.left = `${vv.offsetLeft}px`;
+          containerRef.current.style.width = `${vv.width}px`;
+          containerRef.current.style.bottom = 'auto';
           
           handleScroll();
         } else {
-          containerRef.current.style.height = `calc(100vh - 120px)`;
           containerRef.current.style.position = 'relative';
+          containerRef.current.style.height = `calc(100vh - 120px)`;
           containerRef.current.style.top = '0';
+          containerRef.current.style.left = '0';
+          containerRef.current.style.width = '100%';
         }
       }
     };
