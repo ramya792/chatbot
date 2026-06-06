@@ -25,12 +25,25 @@ export default function InterviewSession() {
   const textareaRef = useRef(null);
   const containerRef = useRef(null);
 
+  const handleScroll = () => {
+    if (document.activeElement === textareaRef.current) {
+      // When typing, keep the latest AI question visible at the top of the chat area
+      const aiMessages = document.querySelectorAll('.message.ai');
+      if (aiMessages.length > 0) {
+        aiMessages[aiMessages.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    }
+    // Default: scroll to the very bottom
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
+
   const adjustTextareaHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    handleScroll();
   };
 
   const getVoices = () => {
@@ -51,21 +64,35 @@ export default function InterviewSession() {
   useEffect(() => {
     const handleResize = () => {
       if (window.visualViewport && containerRef.current) {
-        // Adjust container height to visual viewport height to avoid keyboard overlap
-        containerRef.current.style.height = `${window.visualViewport.height}px`;
-        // Scroll to bottom when keyboard opens
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          // Adjust container height to exactly match the visual viewport minus the 60px navbar
+          // This perfectly solves iOS Safari and Android Chrome keyboard overlap
+          containerRef.current.style.height = `${window.visualViewport.height - 60}px`;
+          containerRef.current.style.position = 'fixed';
+          containerRef.current.style.top = '60px';
+          containerRef.current.style.left = '0';
+          containerRef.current.style.right = '0';
+          
+          handleScroll();
+        } else {
+          containerRef.current.style.height = `calc(100vh - 120px)`;
+          containerRef.current.style.position = 'relative';
+          containerRef.current.style.top = '0';
+        }
       }
     };
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
       handleResize(); // Initial call
     }
 
     return () => {
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
       }
     };
   }, []);
@@ -137,7 +164,7 @@ export default function InterviewSession() {
   }, []);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    handleScroll();
   }, [messages, isTyping]);
 
   const startInterview = async () => {
@@ -371,7 +398,7 @@ export default function InterviewSession() {
             adjustTextareaHeight();
           }}
           onFocus={() => {
-            setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 300);
+            setTimeout(handleScroll, 300);
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
