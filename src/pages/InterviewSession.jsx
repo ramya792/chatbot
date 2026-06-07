@@ -60,7 +60,7 @@ export default function InterviewSession() {
     });
   };
 
-  // Handle precise Visual Viewport mapping for Android keyboards
+  // Handle exact height calculation relative to visual viewport
   useEffect(() => {
     if (!setupData) {
       navigate('/setup');
@@ -71,25 +71,16 @@ export default function InterviewSession() {
       if (window.visualViewport && containerRef.current) {
         const isMobile = window.innerWidth <= 768;
         if (isMobile) {
+          const rect = containerRef.current.getBoundingClientRect();
           const vv = window.visualViewport;
-          // Dynamically map container to EXACTLY the visual viewport
-          containerRef.current.style.position = 'fixed';
-          // Counteract any native browser layout panning
-          containerRef.current.style.top = `${vv.offsetTop + 56}px`;
-          // Perfectly fill the space from navbar to keyboard
-          containerRef.current.style.height = `${vv.height - 56}px`;
-          containerRef.current.style.left = `${vv.offsetLeft}px`;
-          containerRef.current.style.width = `${vv.width}px`;
-          // Prevent body from moving to avoid scroll gaps
-          document.body.style.position = 'fixed';
-          document.body.style.width = '100%';
+          
+          // The exact space available from the top of the container to the top of the keyboard.
+          // By subtracting rect.top, we perfectly counteract any native browser panning!
+          const exactHeight = vv.height - rect.top;
+          
+          containerRef.current.style.height = `${exactHeight}px`;
         } else {
-          containerRef.current.style.position = 'relative';
-          containerRef.current.style.top = '0';
           containerRef.current.style.height = `calc(100vh - 120px)`;
-          containerRef.current.style.width = '100%';
-          containerRef.current.style.left = '0';
-          document.body.style.position = 'static';
         }
       }
     };
@@ -97,12 +88,20 @@ export default function InterviewSession() {
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
       window.visualViewport.addEventListener('scroll', handleResize);
-      // Small delay to ensure DOM is painted
-      setTimeout(handleResize, 50);
+      
+      // Fire repeatedly during the keyboard animation to keep it smooth
+      let frames = 0;
+      const animate = () => {
+        handleResize();
+        if (frames < 20) {
+          frames++;
+          requestAnimationFrame(animate);
+        }
+      };
+      animate();
     }
 
     return () => {
-      document.body.style.position = 'static';
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleResize);
         window.visualViewport.removeEventListener('scroll', handleResize);

@@ -65,7 +65,7 @@ export const generateAIResponse = async (messages, setupData) => {
     return generatedQuestion;
   } catch (error) {
     console.error("AI Error:", error);
-    
+
     if (messages.length === 0) {
       // Fallback questions for different interview types
       let fallbackQuestion = "Hello! Let's start the interview. Can you tell me about yourself?";
@@ -122,7 +122,7 @@ export const generateReport = async (messages) => {
   };
 
   try {
-    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+    const response = await fetch(`${API_URL}?key=${_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
