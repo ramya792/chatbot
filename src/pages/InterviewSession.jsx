@@ -60,48 +60,11 @@ export default function InterviewSession() {
     });
   };
 
-  // Handle Visual Viewport and Body Lock
+  // Ensure user has setup data
   useEffect(() => {
-    // Lock body scrolling so only the chat area scrolls
-    document.body.style.overflow = 'hidden';
-
-    const handleResize = () => {
-      if (window.visualViewport && containerRef.current) {
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) {
-          // Calculate the exact distance from the top of the container to the top of the screen
-          const rect = containerRef.current.getBoundingClientRect();
-          const topOffset = rect.top > 0 ? rect.top : 60; // Fallback to 60px if offset is strange
-          
-          // The container height must exactly fill the remaining visual viewport space
-          const availableHeight = window.visualViewport.height - topOffset;
-          containerRef.current.style.height = `${availableHeight}px`;
-          
-          handleScroll();
-        } else {
-          containerRef.current.style.height = `calc(100vh - 120px)`;
-        }
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-      // Small delay to ensure DOM is painted before calculating bounds
-      setTimeout(handleResize, 50);
-    }
-
     if (!setupData) {
       navigate('/setup');
     }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
-      }
-    };
   }, [setupData, navigate]);
 
   useEffect(() => {
