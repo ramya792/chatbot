@@ -60,11 +60,54 @@ export default function InterviewSession() {
     });
   };
 
-  // Ensure user has setup data
+  // Handle precise Visual Viewport mapping for Android keyboards
   useEffect(() => {
     if (!setupData) {
       navigate('/setup');
+      return;
     }
+
+    const handleResize = () => {
+      if (window.visualViewport && containerRef.current) {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          const vv = window.visualViewport;
+          // Dynamically map container to EXACTLY the visual viewport
+          containerRef.current.style.position = 'fixed';
+          // Counteract any native browser layout panning
+          containerRef.current.style.top = `${vv.offsetTop + 56}px`;
+          // Perfectly fill the space from navbar to keyboard
+          containerRef.current.style.height = `${vv.height - 56}px`;
+          containerRef.current.style.left = `${vv.offsetLeft}px`;
+          containerRef.current.style.width = `${vv.width}px`;
+          // Prevent body from moving to avoid scroll gaps
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+        } else {
+          containerRef.current.style.position = 'relative';
+          containerRef.current.style.top = '0';
+          containerRef.current.style.height = `calc(100vh - 120px)`;
+          containerRef.current.style.width = '100%';
+          containerRef.current.style.left = '0';
+          document.body.style.position = 'static';
+        }
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+      // Small delay to ensure DOM is painted
+      setTimeout(handleResize, 50);
+    }
+
+    return () => {
+      document.body.style.position = 'static';
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
+      }
+    };
   }, [setupData, navigate]);
 
   useEffect(() => {

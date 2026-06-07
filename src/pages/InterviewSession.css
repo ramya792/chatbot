@@ -232,12 +232,6 @@
 
 @media (max-width: 768px) {
   .session-container {
-    position: fixed;
-    top: 56px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: auto;
     display: flex;
     flex-direction: column;
     padding: 0;
