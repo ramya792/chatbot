@@ -238,7 +238,11 @@
     margin: 0;
     max-width: 100%;
     background: var(--bg-dark);
-    height: calc(100dvh - 56px); /* Accounts for mobile navbar and keyboard */
+    position: fixed;
+    top: 56px; /* Approx navbar height */
+    left: 0;
+    right: 0;
+    /* Height is calculated by original JS visualViewport code */
   }
   
   .session-header {
