@@ -75,7 +75,16 @@ export default function InterviewSession() {
   useEffect(() => {
     if (!setupData) {
       navigate('/setup');
+      return;
     }
+    
+    // Prevent background scrolling on mobile to keep fixed layout stable
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
   }, [setupData, navigate]);
 
   useEffect(() => {
@@ -373,7 +382,10 @@ export default function InterviewSession() {
             adjustTextareaHeight();
           }}
           onFocus={() => {
-            setTimeout(handleScroll, 300);
+            setTimeout(() => {
+              window.scrollTo(0, 0);
+              handleScroll();
+            }, 300);
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
