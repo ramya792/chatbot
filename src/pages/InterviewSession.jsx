@@ -26,16 +26,27 @@ export default function InterviewSession() {
   const containerRef = useRef(null);
 
   const handleScroll = () => {
+    const chatArea = document.querySelector('.chat-area');
+    if (!chatArea) return;
+    
     if (document.activeElement === textareaRef.current) {
-      // When typing, keep the latest AI question visible at the top of the chat area
+      // When typing, try to keep the latest AI question visible
       const aiMessages = document.querySelectorAll('.message.ai');
       if (aiMessages.length > 0) {
-        aiMessages[aiMessages.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const lastAiMessage = aiMessages[aiMessages.length - 1];
+        // Calculate the relative position instead of using scrollIntoView
+        chatArea.scrollTo({
+          top: lastAiMessage.offsetTop - 20, // 20px padding
+          behavior: 'smooth'
+        });
         return;
       }
     }
-    // Default: scroll to the very bottom
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    // Default: scroll to the very bottom safely
+    chatArea.scrollTo({
+      top: chatArea.scrollHeight,
+      behavior: 'smooth'
+    });
   };
 
   const adjustTextareaHeight = () => {
@@ -60,53 +71,11 @@ export default function InterviewSession() {
     });
   };
 
-  // Handle exact height calculation relative to visual viewport
+  // Ensure user has setup data
   useEffect(() => {
     if (!setupData) {
       navigate('/setup');
-      return;
     }
-
-    const handleResize = () => {
-      if (window.visualViewport && containerRef.current) {
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) {
-          const rect = containerRef.current.getBoundingClientRect();
-          const vv = window.visualViewport;
-          
-          // The exact space available from the top of the container to the top of the keyboard.
-          // By subtracting rect.top, we perfectly counteract any native browser panning!
-          const exactHeight = vv.height - rect.top;
-          
-          containerRef.current.style.height = `${exactHeight}px`;
-        } else {
-          containerRef.current.style.height = `calc(100vh - 120px)`;
-        }
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-      
-      // Fire repeatedly during the keyboard animation to keep it smooth
-      let frames = 0;
-      const animate = () => {
-        handleResize();
-        if (frames < 20) {
-          frames++;
-          requestAnimationFrame(animate);
-        }
-      };
-      animate();
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
-      }
-    };
   }, [setupData, navigate]);
 
   useEffect(() => {
