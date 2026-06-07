@@ -29,20 +29,8 @@ export default function InterviewSession() {
     const chatArea = document.querySelector('.chat-area');
     if (!chatArea) return;
     
-    if (document.activeElement === textareaRef.current) {
-      // When typing, try to keep the latest AI question visible
-      const aiMessages = document.querySelectorAll('.message.ai');
-      if (aiMessages.length > 0) {
-        const lastAiMessage = aiMessages[aiMessages.length - 1];
-        // Calculate the relative position instead of using scrollIntoView
-        chatArea.scrollTo({
-          top: lastAiMessage.offsetTop - 20, // 20px padding
-          behavior: 'smooth'
-        });
-        return;
-      }
-    }
-    // Default: scroll to the very bottom safely
+    // Always scroll to the bottom so the user can see the latest messages.
+    // The current AI question is now pinned at the top, so we don't need to keep it in the scroll view.
     chatArea.scrollTo({
       top: chatArea.scrollHeight,
       behavior: 'smooth'
@@ -315,6 +303,8 @@ export default function InterviewSession() {
 
   if (!setupData) return null;
 
+  const latestAiMessage = messages.slice().reverse().find(m => m.role === 'ai');
+
   return (
     <div className="session-container animate-fade-in" ref={containerRef}>
       <div className="session-header">
@@ -342,6 +332,17 @@ export default function InterviewSession() {
           </button>
         </div>
       </div>
+
+      {latestAiMessage && (
+        <div className="pinned-ai-question">
+          <div className="pinned-label">
+            <Bot size={16} style={{ marginRight: '6px' }} /> Current Question
+          </div>
+          <div className="pinned-content">
+            {renderMessageContent(latestAiMessage.content)}
+          </div>
+        </div>
+      )}
 
       <div className="chat-area">
         {messages.map((msg, idx) => (
