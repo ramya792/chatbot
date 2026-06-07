@@ -122,7 +122,7 @@ export const generateReport = async (messages) => {
   };
 
   try {
-    const response = await fetch(`${API_URL}?key=${_KEY}`, {
+    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

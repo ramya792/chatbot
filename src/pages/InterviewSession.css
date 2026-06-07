@@ -234,10 +234,9 @@
   .session-container {
     position: fixed;
     top: 56px;
-    bottom: 0;
+    height: calc(100dvh - 56px);
     left: 0;
     right: 0;
-    height: auto;
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -311,7 +310,7 @@
   
   .input-area {
     position: relative;
-    padding: 10px 12px;
+    padding: 10px 12px 20px 12px; /* Added bottom padding for a gap above keyboard */
     flex-direction: row;
     align-items: flex-end;
     gap: 8px;
