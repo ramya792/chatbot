@@ -30,7 +30,7 @@ export const generateAIResponse = async (messages, setupData) => {
   if (contents.length === 0) {
     contents = [{
       role: 'user',
-      parts: [{ text: `Please introduce yourself briefly and ask the first relevant interview question based on the interview type (${setupData.type}), company (${setupData.company}), and your personality (${setupData.personality}).` }]
+      parts: [{ text: `Hello! Please introduce yourself briefly. Then, IMMEDIATELY ask the first interview question. The question MUST strictly be a ${setupData.type} question tailored for a candidate at ${setupData.company}. Do not just say hello, you must include the first question.` }]
     }];
   }
 
