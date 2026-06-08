@@ -1,5 +1,5 @@
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export const generateAIResponse = async (messages, setupData) => {
   console.log("selectedInterviewType:", setupData.type);
@@ -21,35 +21,35 @@ export const generateAIResponse = async (messages, setupData) => {
   6. Keep responses concise and conversational, making the user feel relaxed and confident.
   7. When you want to end the interview (e.g., after 5-6 questions), say exactly the phrase: "[INTERVIEW_COMPLETE]" at the very end of your final feedback.`;
 
-  // Format history for Gemini API
-  let contents = messages.map(msg => ({
-    role: msg.role === 'ai' ? 'model' : 'user',
-    parts: [{ text: msg.content }]
+  // Format history for Groq API
+  let formattedMessages = messages.map(msg => ({
+    role: msg.role === 'ai' ? 'assistant' : 'user',
+    content: msg.content
   }));
 
-  if (contents.length === 0) {
-    contents = [{
+  if (formattedMessages.length === 0) {
+    formattedMessages = [{
       role: 'user',
-      parts: [{ text: `Hello! Please introduce yourself briefly. Then, IMMEDIATELY ask the first interview question. The question MUST strictly be a ${setupData.type} question tailored for a candidate at ${setupData.company}. Do not just say hello, you must include the first question.` }]
+      content: `Hello! Please introduce yourself briefly. Then, IMMEDIATELY ask the first interview question. The question MUST strictly be a ${setupData.type} question tailored for a candidate at ${setupData.company}. Do not just say hello, you must include the first question.`
     }];
   }
 
   const payload = {
-    system_instruction: {
-      parts: [{ text: systemPrompt }]
-    },
-    contents: contents,
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 500,
-    }
+    model: 'llama-3.3-70b-versatile',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...formattedMessages
+    ],
+    temperature: 0.7,
+    max_tokens: 500,
   };
 
   try {
-    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify(payload)
     });
@@ -60,7 +60,7 @@ export const generateAIResponse = async (messages, setupData) => {
     }
 
     const data = await response.json();
-    const generatedQuestion = data.candidates[0].content.parts[0].text;
+    const generatedQuestion = data.choices[0].message.content;
     console.log("generatedQuestion:", generatedQuestion);
     return generatedQuestion;
   } catch (error) {
@@ -114,24 +114,32 @@ export const generateReport = async (messages) => {
   `;
 
   const payload = {
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.2,
-      response_mime_type: "application/json",
-    }
+    model: 'llama-3.3-70b-versatile',
+    messages: [
+      { role: 'system', content: 'You are an AI that evaluates interviews and MUST output strictly valid JSON.' },
+      { role: 'user', content: prompt }
+    ],
+    temperature: 0.2,
+    response_format: { type: "json_object" }
   };
 
   try {
-    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify(payload)
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Failed to generate report');
+    }
+
     const data = await response.json();
-    const text = data.candidates[0].content.parts[0].text;
+    const text = data.choices[0].message.content;
     return JSON.parse(text);
   } catch (error) {
     console.error("Report Generation Error:", error);

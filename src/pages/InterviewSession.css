@@ -324,7 +324,6 @@
     flex: 1;
     overflow-y: auto;
     padding: 16px;
-    padding-bottom: 80px; /* Space for the fixed input bar */
     gap: 16px;
     margin-bottom: 0;
     border-radius: 0;
@@ -344,11 +343,7 @@
   }
   
   .input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
+    position: relative;
     padding: 10px 12px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* iOS home indicator */
     flex-direction: row;

@@ -19,8 +19,6 @@ export default function InterviewSession() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  const [viewportOffset, setViewportOffset] = useState(0);
-
   const chatEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const textareaRef = useRef(null);
@@ -76,24 +74,6 @@ export default function InterviewSession() {
     };
   }, [setupData, navigate]);
 
-  // Handle VisualViewport for keyboard tracking
-  useEffect(() => {
-    if (!window.visualViewport) return;
-
-    const handleResizeOrScroll = () => {
-      const keyboardOffset = window.innerHeight - (window.visualViewport.offsetTop + window.visualViewport.height);
-      setViewportOffset(Math.max(0, keyboardOffset));
-    };
-
-    window.visualViewport.addEventListener('resize', handleResizeOrScroll);
-    window.visualViewport.addEventListener('scroll', handleResizeOrScroll);
-    handleResizeOrScroll();
-
-    return () => {
-      window.visualViewport.removeEventListener('resize', handleResizeOrScroll);
-      window.visualViewport.removeEventListener('scroll', handleResizeOrScroll);
-    };
-  }, []);
 
   useEffect(() => {
     try {
@@ -391,7 +371,7 @@ export default function InterviewSession() {
         <div ref={chatEndRef} />
       </div>
 
-      <div className="input-area" style={{ bottom: viewportOffset > 0 ? `${viewportOffset}px` : undefined }}>
+      <div className="input-area">
         <textarea
           ref={textareaRef}
           className="chat-input"
