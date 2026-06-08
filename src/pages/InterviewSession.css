@@ -272,7 +272,7 @@
 @media (max-width: 768px) {
   .session-container {
     position: relative;
-    height: calc(100dvh - 60px); /* Adjust for navbar */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -324,6 +324,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+    padding-bottom: 80px; /* Space for the fixed input bar */
     gap: 16px;
     margin-bottom: 0;
     border-radius: 0;
@@ -343,25 +344,34 @@
   }
   
   .input-area {
-    position: relative;
-    padding: 10px 12px 10px 12px; /* Removed extra bottom padding for a gap above keyboard */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 10px 12px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* iOS home indicator */
     flex-direction: row;
     align-items: flex-end;
     gap: 8px;
     border-radius: 0;
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(10, 14, 23, 1);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(17, 24, 39, 0.85); /* #111827 with slight transparency */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     flex-shrink: 0;
   }
 
   .chat-input {
     padding: 12px 16px;
+    min-height: 48px;
     height: 48px;
     font-size: 0.95rem;
-    border-radius: 24px; /* Pill shaped like WhatsApp */
+    border-radius: 25px;
     background: rgba(255, 255, 255, 0.08);
-    scrollbar-width: none; /* Hide scrollbar for clean look */
+    scrollbar-width: none;
+    flex: 1;
   }
   .chat-input::-webkit-scrollbar {
     display: none;
@@ -371,10 +381,12 @@
     flex-direction: row;
     gap: 6px;
     padding-bottom: 2px;
+    align-items: center;
   }
 
   .btn-icon {
     width: 44px;
     height: 44px;
+    border-radius: 50%; /* Make them perfectly circular */
   }
 }
