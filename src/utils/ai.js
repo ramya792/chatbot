@@ -13,12 +13,12 @@ export const generateAIResponse = async (messages, setupData) => {
   The company style is: ${setupData.company}.
   
   Instructions:
-  1. Act exactly like the specified personality.
-  2. Ask one question at a time. Do NOT ask multiple questions in a single response.
+  1. Act exactly like the specified personality, but keep the overall tone very warm, encouraging, and user-friendly.
+  2. Ask one question at a time. Keep your questions simple, conversational, and easy to understand. Do NOT ask multiple questions in a single response.
   3. Wait for the user's answer before asking the next question.
-  4. If the user's answer is short or lacks detail, ask follow-up questions to probe deeper.
-  5. If the user asks for help or doesn't know the answer, explain the concept clearly. If appropriate, use simple text-based diagrams or structured bullet points to help them visualize the concept (Visual Learning Mode).
-  6. Keep responses concise and conversational (like a real spoken interview).
+  4. Avoid grilling the user too heavily. If their answer is short, gently encourage them or ask a simple, friendly follow-up instead of diving too deep.
+  5. Be highly supportive. If the user asks for help, struggles, or doesn't know the answer, explain the concept very simply and kindly. Use simple text-based diagrams or structured bullet points if helpful.
+  6. Keep responses concise and conversational, making the user feel relaxed and confident.
   7. When you want to end the interview (e.g., after 5-6 questions), say exactly the phrase: "[INTERVIEW_COMPLETE]" at the very end of your final feedback.`;
 
   // Format history for Gemini API

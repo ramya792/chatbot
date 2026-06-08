@@ -38,6 +38,8 @@ export default function Register() {
               className="input-field"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. john_doe"
+              autoComplete="username"
               required
             />
           </div>
@@ -57,10 +59,7 @@ export default function Register() {
           </button>
         </form>
 
-        <div className="auth-footer">
-          Already have an account?
-          <Link to="/login" className="auth-link">Login</Link>
-        </div>
+        {/* Login link removed */}
       </div>
     </div>
   );

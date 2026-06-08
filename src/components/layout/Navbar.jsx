@@ -9,7 +9,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/register');
   };
 
   return (
@@ -36,7 +36,6 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="nav-link">Login</Link>
               <Link to="/register" className="btn btn-primary">Sign Up</Link>
             </>
           )}

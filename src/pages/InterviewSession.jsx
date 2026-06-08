@@ -76,53 +76,57 @@ export default function InterviewSession() {
   }, [setupData, navigate]);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-      recognition.onstart = () => {
-        setStatusMessage('Listening...');
-      };
+        recognition.onstart = () => {
+          setStatusMessage('Listening...');
+        };
 
-      recognition.onsoundend = () => {
-        setStatusMessage('Processing...');
-      };
+        recognition.onsoundend = () => {
+          setStatusMessage('Processing...');
+        };
 
-      recognition.onresult = (event) => {
-        let finalTranscript = '';
+        recognition.onresult = (event) => {
+          let finalTranscript = '';
 
-        for (let i = 0; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
+          for (let i = 0; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
           }
-        }
 
-        if (finalTranscript.trim()) {
-          setInputValue(prev => {
-            const newValue = prev + (prev.trim() ? ' ' : '') + finalTranscript.trim();
-            setTimeout(adjustTextareaHeight, 0); 
-            return newValue;
-          });
-        }
-      };
+          if (finalTranscript.trim()) {
+            setInputValue(prev => {
+              const newValue = prev + (prev.trim() ? ' ' : '') + finalTranscript.trim();
+              setTimeout(adjustTextareaHeight, 0); 
+              return newValue;
+            });
+          }
+        };
 
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
-        setIsRecording(false);
-        if (event.error !== 'no-speech') {
-           setStatusMessage('');
-        }
-      };
+        recognition.onerror = (event) => {
+          console.error('Speech recognition error', event.error);
+          setIsRecording(false);
+          if (event.error !== 'no-speech') {
+             setStatusMessage('');
+          }
+        };
 
-      recognition.onend = () => {
-        setIsRecording(false);
-        setStatusMessage('');
-      };
+        recognition.onend = () => {
+          setIsRecording(false);
+          setStatusMessage('');
+        };
 
-      recognitionRef.current = recognition;
+        recognitionRef.current = recognition;
+      }
+    } catch (err) {
+      console.warn("Speech recognition initialization failed:", err);
     }
 
     // Start interview by triggering the AI to introduce itself
@@ -130,7 +134,11 @@ export default function InterviewSession() {
 
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          console.warn(e);
+        }
       }
     };
   }, []);
@@ -333,16 +341,7 @@ export default function InterviewSession() {
         </div>
       </div>
 
-      {latestAiMessage && (
-        <div className="pinned-ai-question">
-          <div className="pinned-label">
-            <Bot size={16} style={{ marginRight: '6px' }} /> Current Question
-          </div>
-          <div className="pinned-content">
-            {renderMessageContent(latestAiMessage.content)}
-          </div>
-        </div>
-      )}
+      {/* Pinned question removed as it duplicates the chat bubble */}
 
       <div className="chat-area">
         {messages.map((msg, idx) => (

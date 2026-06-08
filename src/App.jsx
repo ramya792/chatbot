@@ -4,7 +4,6 @@ import Navbar from './components/layout/Navbar';
 
 // Pages
 import Home from './pages/Home';
-import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import InterviewSetup from './pages/InterviewSetup';
@@ -14,7 +13,7 @@ import Report from './pages/Report';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
-  if (!currentUser) return <Navigate to="/login" />;
+  if (!currentUser) return <Navigate to="/register" />;
   return children;
 };
 
@@ -27,7 +26,6 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
               {/* Protected Routes */}
