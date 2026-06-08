@@ -97,7 +97,7 @@
   }
   
   .brand-text {
-    display: none; /* Hide brand text on mobile to save space */
+    display: none !important; /* Hide brand text on mobile to save space */
   }
 
   .brand-icon {
@@ -106,11 +106,11 @@
   }
   
   .navbar-links {
-    width: auto;
+    width: 100%;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: nowrap;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   
   .user-menu {

@@ -272,11 +272,11 @@
 @media (max-width: 768px) {
   .session-container {
     position: relative;
-    height: 100vh;
+    height: calc(100dvh - 65px); /* Ensure it fits below the navbar */
     display: flex;
     flex-direction: column;
     padding: 0;
-    margin: -20px; /* Offset the main-content padding */
+    margin: 0 -20px -20px -20px; /* Remove negative top margin to prevent overlapping the navbar */
     background: var(--bg-dark);
     z-index: 10;
   }
